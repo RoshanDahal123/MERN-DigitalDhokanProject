@@ -7,16 +7,16 @@ try {
   sequelize
     .authenticate()
     .then(() => {
-      console.log("milyo hai authentication!!");
+      console.log("authentication is correct");
     })
     .catch((err) => {
-      console.log("error aayo", err);
+      console.log("error occured", err);
     });
 } catch (error) {
   console.log(error);
 }
 
-sequelize.sync({ force: true }).then(() => {
+sequelize.sync({ force: false }).then(() => {
   console.log("local changes injected to database successfully");
 });
 export default sequelize;
