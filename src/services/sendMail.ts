@@ -20,6 +20,7 @@ const sendMail = async (data: IData) => {
     to: data.to,
     subject: data.subject,
     text: data.text,
+    //html:"<b> hello world</b>" we can send html too in this way
   };
   try {
     await transporter.sendMail(mailOptions);
