@@ -19,10 +19,24 @@ class UserController {
       return;
     }
     //data--> users table ma insert garne
+
+    //checkhwether email is already registered or not
+
+    const [data] = await User.findAll({
+      where: {
+        email: email,
+      },
+    });
+    if (data) {
+      res.status(400).json({
+        message: "Please try again later!!!",
+      });
+      return;
+    }
     await User.create({
       username,
       email,
-      password: bcrypt.hashSync(password, 12),
+      password: bcrypt.hashSync(password, 10),
     });
     await sendMail({
       to: email,
