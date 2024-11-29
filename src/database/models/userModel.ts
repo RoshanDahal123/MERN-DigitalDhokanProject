@@ -11,12 +11,12 @@ class User extends Model {
     type: DataType.UUID,
     defaultValue: DataType.UUIDV4,
   })
-  declare id: String;
+  declare id: string;
 
   @Column({
     type: DataType.STRING,
   })
-  declare username: String;
+  declare username: string;
 
   @Column({
     type: DataType.STRING,

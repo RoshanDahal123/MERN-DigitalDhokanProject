@@ -28,6 +28,8 @@ class CategoryController {
   }
 
   async addCategory(req: Request, res: Response): Promise<void> {
+    //@ts-ignore
+    console.log(req.user);
     const { categoryName } = req.body;
 
     if (!categoryName) {

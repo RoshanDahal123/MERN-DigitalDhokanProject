@@ -1,23 +1,21 @@
 import express, { Router } from "express";
-import categoryController from "../controllers/categoryController";
+import productController from "../controllers/productController";
 import userMiddleware, { Role } from "../middleware/userMiddleware";
-
 const router: Router = express.Router();
-
 router
   .route("/")
-  .get(categoryController.getCategories)
   .post(
     userMiddleware.isUserLoggedIn,
     userMiddleware.accessTo(Role.Admin),
-    categoryController.addCategory
-  );
+    productController.createProduct
+  )
+  .get(productController.getAllProducts);
 router
   .route("/:id")
-  .patch(userMiddleware.accessTo(Role.Admin), categoryController.updateCategory)
-  .delete(
+  .post(
+    userMiddleware.isUserLoggedIn,
     userMiddleware.accessTo(Role.Admin),
-    categoryController.deleteCategory
-  );
-
+    productController.deleteProduct
+  )
+  .get(productController.getSingleProduct);
 export default router;
