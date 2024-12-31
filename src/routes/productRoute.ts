@@ -1,21 +1,33 @@
 import express, { Router } from "express";
 import productController from "../controllers/productController";
 import userMiddleware, { Role } from "../middleware/userMiddleware";
+
+import { multer, storage } from "../middleware/multerMiddleware";
+import errorHandler from "../services/errorHandler";
+const upload = multer({ storage: storage });
 const router: Router = express.Router();
+
 router
   .route("/")
   .post(
     userMiddleware.isUserLoggedIn,
     userMiddleware.accessTo(Role.Admin),
-    productController.createProduct
+    upload.single("productImage"),
+    errorHandler(productController.createProduct)
   )
-  .get(productController.getAllProducts);
+  .get(errorHandler(productController.getAllProducts));
+
 router
   .route("/:id")
-  .post(
+  .delete(
     userMiddleware.isUserLoggedIn,
     userMiddleware.accessTo(Role.Admin),
-    productController.deleteProduct
+    errorHandler(productController.deleteProduct)
   )
-  .get(productController.getSingleProduct);
+  .patch(
+    userMiddleware.isUserLoggedIn,
+    userMiddleware.accessTo(Role.Admin),
+    errorHandler(productController.updateProduct)
+  )
+  .get(errorHandler(productController.getSingleProduct));
 export default router;
