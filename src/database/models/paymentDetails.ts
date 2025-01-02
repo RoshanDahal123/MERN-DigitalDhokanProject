@@ -37,3 +37,4 @@ class Payment extends Model {
   })
   declare paymentStatus: string;
 }
+export default Payment;

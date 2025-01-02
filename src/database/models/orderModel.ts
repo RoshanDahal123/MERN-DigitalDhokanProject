@@ -1,12 +1,6 @@
-import {
-  Table,
-  Column,
-  Model,
-  DataType,
-  AllowNull,
-} from "sequelize-typescript";
-import OrderStatus from "../../globals/types/indes";
-import { defaultMaxListeners } from "nodemailer/lib/xoauth2";
+import { Table, Column, Model, DataType } from "sequelize-typescript";
+
+import { OrderStatus } from "../../globals/types/indes";
 // @Table is a decorators that tells Sequelize that this class is a table
 @Table({
   tableName: "orders",

@@ -25,3 +25,4 @@ class OrderDetails extends Model {
   })
   declare quantity: number;
 }
+export default OrderDetails;
