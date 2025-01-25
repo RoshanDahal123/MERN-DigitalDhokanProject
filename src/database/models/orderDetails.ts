@@ -1,10 +1,4 @@
-import {
-  AllowNull,
-  Column,
-  DataType,
-  Model,
-  Table,
-} from "sequelize-typescript";
+import { Column, DataType, Model, Table } from "sequelize-typescript";
 
 @Table({
   tableName: "orderdetails",
@@ -14,15 +8,15 @@ import {
 class OrderDetails extends Model {
   @Column({
     primaryKey: true,
-    type: DataType.FLOAT,
+    type: DataType.UUID,
     defaultValue: DataType.UUIDV4,
   })
   declare id: string;
 
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.STRING,
     allowNull: false,
   })
-  declare quantity: number;
+  declare quantity: string;
 }
 export default OrderDetails;

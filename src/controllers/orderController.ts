@@ -3,9 +3,10 @@ import Order from "../database/models/orderModel";
 import OrderDetails from "../database/models/orderDetails";
 import { PaymentMethod } from "../globals/types/indes";
 import Payment from "../database/models/paymentDetails";
+import axios from "axios";
 interface IProduct {
   productId: string;
-  prductQty: number;
+  productQuantity: string;
 }
 interface OrderRequest extends Request {
   user?: {
@@ -41,28 +42,49 @@ class OrderController {
     });
 
     //for orderdetails
-    products.forEach((product) => {
+    products.forEach((product: IProduct) => {
       OrderDetails.create({
-        quantity: product.prductQty,
+        quantity: product.productQuantity,
         productId: product.productId,
         orderId: orderData.id,
       });
     });
     //for payment
 
-    if (paymentMethod == PaymentMethod.COD) {
-      await Payment.create({
-        orderId: orderData.id,
-        paymentMethod,
-      });
-    } else if (paymentMethod == PaymentMethod.Khalti) {
+    const paymentData = await Payment.create({
+      orderId: orderData.id,
+      paymentMethod,
+    });
+
+    if (paymentMethod == PaymentMethod.Khalti) {
       //khalti integration
+      const data = {
+        return_url: "http://localhost:5173/",
+        website_url: "http://localhost:5173/",
+        amount: totalAmount * 100,
+        purchase_order_id: orderData.id,
+        purchase_order_name: "order_" + orderData.id,
+      };
+      const response = await axios.post(
+        "https://dev.khalti.com/api/v2/epayment/initiate/",
+        data,
+        {
+          headers: {
+            Authorization: "Key 2092f6cedeff4138a55cadae0e9b6537",
+          },
+        }
+      );
+      const khaltiResponse = response.data;
+
+      paymentData.pidx = khaltiResponse.pidx;
+      paymentData.save();
+      res.status(200).json({
+        message: "Order Created Successfully",
+        url: khaltiResponse.payment_url,
+      });
     } else {
       //esewa integration
     }
-    res.status(200).json({
-      message: "Order Created Successfully",
-    });
   }
 }
 
