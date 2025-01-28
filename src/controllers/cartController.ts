@@ -27,7 +27,7 @@ class CartController {
       },
     });
     if (cartOfUser) {
-      cartOfUser.quantity += cartOfUser.quantity;
+      cartOfUser.quantity = quantity;
       await cartOfUser.save();
     } else {
       await Cart.create({
