@@ -5,6 +5,7 @@ import categoryController from "./src/controllers/categoryController";
 import { Server } from "socket.io";
 import jwt from "jsonwebtoken";
 import User from "./src/database/models/userModel";
+import Order from "./src/database/models/orderModel";
 function startServer() {
   const port = envConfig.port || 4000;
   const server = app.listen(port, () => {
@@ -24,10 +25,10 @@ function startServer() {
     onlineUsers.push({ socketId, userId, role });
   };
   io.on("connection", (socket) => {
-    const { token } = socket.handshake.auth; //jwt token
+    const { token } = socket.handshake.headers; //jwt token
     if (token) {
       jwt.verify(
-        token,
+        token as string,
         envConfig.jwtSecretKey as string,
         async (err: any, result: any) => {
           if (err) {
@@ -40,10 +41,38 @@ function startServer() {
             }
             //userId grab garne
             addToOnlineUsers(socket.id, result.userId, userData.role);
+            console.log(onlineUsers);
           }
         }
       );
+    } else {
+      socket.emit("error", "please provide token");
     }
+    socket.on("updateOrderStatus", async (data) => {
+      const { status, orderId, userId } = data;
+
+      const findUser = onlineUsers.find((user) => user.userId == userId); // {socketId,userId, role}
+
+      if (findUser) {
+        await Order.update(
+          {
+            orderStatus: status,
+          },
+          {
+            where: {
+              id: orderId,
+            },
+          }
+        );
+
+        io.to(findUser.socketId).emit(
+          "success",
+          "Order Status updated successfully!!"
+        );
+      } else {
+        socket.emit("error", "User is not online!!");
+      }
+    });
   });
 }
 startServer();
