@@ -6,6 +6,7 @@ import categoryRoute from "./routes/categoryRoute";
 import productRoute from "./routes/productRoute";
 import orderRoute from "./routes/orderRoute";
 import cartRoute from "./routes/cartRoute";
+
 app.use(express.json());
 
 app.use("/api/auth", userRoute);
