@@ -14,7 +14,7 @@ class ProductController {
       productDescription,
       productPrice,
       productTotalStock,
-      discount,
+      productDiscount,
       categoryId,
     } = req.body;
     const filename = req.file
@@ -25,11 +25,12 @@ class ProductController {
       !productDescription ||
       !productPrice ||
       !productTotalStock ||
-      !categoryId
+      !categoryId ||
+      !productDiscount
     ) {
       res.status(400).json({
         message:
-          "Please provide productName,productDescription,productPrice,productTotalStock,discount,categoryId",
+          "Please provide productName,productDescription,productPrice,productTotalStock,productDiscount,categoryId",
       });
       return;
     }
@@ -38,7 +39,7 @@ class ProductController {
       productDescription,
       productPrice,
       productTotalStock,
-      discount: discount || 0,
+      productDiscount: productDiscount || 0,
       categoryId: categoryId,
       productImageUrl: filename,
     });
