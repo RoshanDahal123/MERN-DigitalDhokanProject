@@ -19,4 +19,6 @@ app.use("/api/category", categoryRoute);
 app.use("/api/product", productRoute);
 app.use("/api/order", orderRoute);
 app.use("/api/cart", cartRoute);
+
+app.use(express.static("./src/uploads"));
 export default app;
