@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Cart from "../database/models/cartModel";
 import Product from "../database/models/productModel";
+import Category from "../database/models/categoryModel";
 
 interface AuthRequest extends Request {
   user?: {
@@ -36,10 +37,27 @@ class CartController {
         quantity,
       });
     }
+    const cartData = await Cart.findAll({
+      where: {
+        userId,
+      },
+      include: [
+        {
+          model: Product,
+          include: [
+            {
+              model: Category,
+            },
+          ],
+        },
+      ],
+    });
     res.status(200).json({
-      message: "Product added to cart",
+      message: "Product added to Cart",
+      data: cartData,
     });
   }
+
   async getMyCartItems(req: AuthRequest, res: Response) {
     const userId = req.user?.id;
     const cartItems = await Cart.findAll({
@@ -104,7 +122,7 @@ class CartController {
     });
     if (!cartItem) {
       res.status(404).json({
-        message: "there is no product in the cartn with the provided productId",
+        message: "there is no product in the cart with the provided productId",
       });
     } else {
       cartItem.quantity = quantity;

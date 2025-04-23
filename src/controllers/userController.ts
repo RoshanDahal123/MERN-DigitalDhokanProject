@@ -86,6 +86,11 @@ class UserController {
           user,
         });
       }
+      await sendMail({
+        to: email,
+        subject: "Login  successful on Digital Dookan",
+        text: "Welcome to Digital Dokaan, Thank you for supporting",
+      });
     }
 
     //if password is correct ,token generated(jwt)
