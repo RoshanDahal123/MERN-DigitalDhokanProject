@@ -46,8 +46,36 @@ class Order extends Model {
 
   @Column({
     type: DataType.STRING,
-    allowNull: false,
   })
-  declare shippingAddress: string;
+  declare addressLine: string;
+
+  @Column({
+    type: DataType.STRING,
+  })
+  declare city: string;
+  @Column({
+    type: DataType.STRING,
+  })
+  declare state: string;
+  @Column({
+    type: DataType.STRING,
+  })
+  declare zipcode: string;
+  @Column({
+    type: DataType.STRING,
+  })
+  declare firstName: string;
+
+  @Column({
+    type: DataType.STRING,
+  })
+  declare lastName: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+    defaultValue: "Anonymous@gmail.com ",
+  })
+  declare email: string;
 }
 export default Order;

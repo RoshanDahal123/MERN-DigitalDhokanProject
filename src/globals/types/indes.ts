@@ -7,7 +7,7 @@ export enum OrderStatus {
 }
 
 export enum PaymentMethod {
-  COD = "cashondelivery",
+  COD = "cod",
   Esewa = "esewa",
   Khalti = "khalti",
 }
