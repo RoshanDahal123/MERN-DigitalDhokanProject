@@ -5,6 +5,8 @@ import { PaymentMethod, PaymentStatus } from "../globals/types/indes";
 import Payment from "../database/models/paymentDetails";
 import axios from "axios";
 import Cart from "../database/models/cartModel";
+import Product from "../database/models/productModel";
+import Category from "../database/models/categoryModel";
 interface IProduct {
   productId: string;
   quantity: string;
@@ -50,6 +52,10 @@ class OrderController {
       });
       return;
     }
+    let data;
+    const paymentData = await Payment.create({
+      paymentMethod,
+    });
     //for order
     const orderData = await Order.create({
       phoneNumber,
@@ -62,10 +68,9 @@ class OrderController {
       firstName,
       lastName,
       email,
+      paymentId: paymentData.id,
     });
 
-    //for orderdetails
-    let data;
     products.forEach(async function (product: IProduct) {
       data = await OrderDetails.create({
         quantity: product.quantity,
@@ -81,11 +86,6 @@ class OrderController {
       });
     });
     //for payment
-
-    const paymentData = await Payment.create({
-      orderId: orderData.id,
-      paymentMethod,
-    });
 
     if (paymentMethod == PaymentMethod.Khalti) {
       //khalti integration
@@ -159,6 +159,81 @@ class OrderController {
     } else {
       res.status(200).json({
         message: "Payment not verified or cancelled",
+      });
+    }
+  }
+
+  async fetchMyOrder(req: OrderRequest, res: Response) {
+    const userId = req.user?.id;
+    const orders = await Order.findAll({
+      where: {
+        userId,
+      },
+      attributes: ["totalAmount", "id", "orderStatus"],
+      include: {
+        model: Payment,
+        attributes: ["paymentMethod", "paymentStatus"],
+      },
+    });
+    if (orders.length > 0) {
+      res.status(200).json({
+        message: "Orders fetched successsfully",
+        data: orders,
+      });
+    } else {
+      res.status(404).json({
+        message: "No order found",
+        data: [],
+      });
+    }
+  }
+
+  async fetchMyOrderDetail(req: OrderRequest, res: Response) {
+    const userId = req.user?.id;
+    const orderId = req.params.id;
+    const orders = await OrderDetails.findAll({
+      where: {
+        orderId,
+      },
+      //joining the order that includes payment model and product model
+      include: [
+        {
+          model: Order,
+          include: [
+            {
+              model: Payment,
+              attributes: ["paymentMethod", "paymentStatus"],
+            },
+          ],
+          attributes: [
+            "orderStatus",
+            "addressLine",
+            "state",
+            "city",
+            "totalAmount",
+            "phoneNumber",
+          ],
+        },
+        {
+          model: Product,
+          include: [
+            {
+              model: Category,
+            },
+          ],
+          attributes: ["productImageUrl", "productName", "productPrice"],
+        },
+      ],
+    });
+    if (orders.length > 0) {
+      res.status(200).json({
+        message: "Orders fetched successsfully",
+        data: orders,
+      });
+    } else {
+      res.status(404).json({
+        message: "No order found",
+        data: [],
       });
     }
   }
