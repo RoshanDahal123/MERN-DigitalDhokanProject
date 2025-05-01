@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import Order from "../database/models/orderModel";
 import OrderDetails from "../database/models/orderDetails";
-import { PaymentMethod, PaymentStatus } from "../globals/types/indes";
+import { PaymentMethod, PaymentStatus } from "../globals/types";
 import Payment from "../database/models/paymentDetails";
 import axios from "axios";
 import Cart from "../database/models/cartModel";
@@ -212,6 +212,9 @@ class OrderController {
             "city",
             "totalAmount",
             "phoneNumber",
+            "firstName",
+            "lastName",
+            "email",
           ],
         },
         {

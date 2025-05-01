@@ -6,7 +6,7 @@ import {
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
-import { PaymentMethod, PaymentStatus } from "../../globals/types/indes";
+import { PaymentMethod, PaymentStatus } from "../../globals/types";
 
 @Table({
   tableName: "payment",
@@ -37,8 +37,8 @@ class Payment extends Model {
   })
   declare paymentStatus: string;
   @Column({
-    type:DataType.STRING,
+    type: DataType.STRING,
   })
-  declare pidx:string
+  declare pidx: string;
 }
 export default Payment;

@@ -1,6 +1,6 @@
 import { Table, Column, Model, DataType } from "sequelize-typescript";
 
-import { OrderStatus } from "../../globals/types/indes";
+import { OrderStatus } from "../../globals/types";
 // @Table is a decorators that tells Sequelize that this class is a table
 @Table({
   tableName: "orders",
