@@ -252,7 +252,7 @@ class OrderController {
         id: orderId,
       },
     });
-
+    // console.log(order);
     if (!order) {
       res.status(400).json({
         message: "No order with that Id",
@@ -272,7 +272,7 @@ class OrderController {
       return;
     }
     await Order.update(
-      { OrderStatus: OrderStatus.Cancelled },
+      { orderStatus: OrderStatus.Cancelled },
       {
         where: {
           id: orderId,
@@ -281,6 +281,7 @@ class OrderController {
     );
     res.status(200).json({
       message: "Order Cancelled successfully",
+      data: order.orderStatus,
     });
   }
 
