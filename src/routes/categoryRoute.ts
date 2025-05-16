@@ -16,6 +16,7 @@ router
 router
   .route("/:id")
   .patch(
+    userMiddleware.isUserLoggedIn,
     userMiddleware.accessTo(Role.Admin),
     errorHandler(categoryController.updateCategory)
   )
