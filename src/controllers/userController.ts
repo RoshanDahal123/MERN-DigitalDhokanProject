@@ -171,5 +171,30 @@ class UserController {
       sendResponse(res, 200, "Password reset successfully");
     }
   }
+  static async fetchUsers(req: Request, res: Response) {
+    const users = await User.findAll({
+      attributes: ["id", "username", "email"],
+    });
+    if (!users) {
+      sendResponse(res, 404, "No user found");
+    } else {
+      sendResponse(res, 200, "Users fetched successfully", users);
+    }
+  }
+
+  static async deleteUser(req: Request, res: Response) {
+    const { id } = req.params;
+    if (!id) {
+      sendResponse(res, 400, "Please provide user id");
+      return;
+    }
+    const user = await User.findByPk(id);
+    if (!user) {
+      sendResponse(res, 404, "No user found with that id");
+      return;
+    }
+    await user.destroy();
+    sendResponse(res, 200, "User deleted successfully");
+  }
 }
 export default UserController;
