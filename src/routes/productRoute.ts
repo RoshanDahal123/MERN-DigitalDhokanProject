@@ -12,7 +12,7 @@ router
   .post(
     userMiddleware.isUserLoggedIn,
     userMiddleware.accessTo(Role.Admin),
-    upload.single("productImage"),
+    upload.single("productImageUrl"),
     errorHandler(productController.createProduct)
   )
   .get(errorHandler(productController.getAllProducts));
