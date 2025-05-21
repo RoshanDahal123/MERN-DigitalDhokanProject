@@ -22,11 +22,13 @@ router
   .delete(
     userMiddleware.isUserLoggedIn,
     userMiddleware.accessTo(Role.Admin),
+    upload.single("productImageUrl"),
     errorHandler(productController.deleteProduct)
   )
-  .patch(
+  .post(
     userMiddleware.isUserLoggedIn,
     userMiddleware.accessTo(Role.Admin),
+    upload.single("productImageUrl"),
     errorHandler(productController.updateProduct)
   )
   .get(errorHandler(productController.getSingleProduct));

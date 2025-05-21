@@ -7,6 +7,7 @@ import productRoute from "./routes/productRoute";
 import orderRoute from "./routes/orderRoute";
 import cartRoute from "./routes/cartRoute";
 import cors from "cors";
+import Product from "./database/models/productModel";
 app.use(
   cors({
     origin: "http://localhost:5173",

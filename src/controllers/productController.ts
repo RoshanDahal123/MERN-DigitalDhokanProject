@@ -79,6 +79,9 @@ class ProductController {
 
   async updateProduct(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
+    console.log("req.params", req.params.id);
+
+    console.log("req.body", req);
 
     const {
       productName,
@@ -89,36 +92,34 @@ class ProductController {
       categoryId,
     } = req.body;
 
-    const product = await Product.findOne({
-      where: { id },
-    });
-    if (!product) {
-      res.status(400).json({
-        message: "No product with that id",
-      });
-      return;
-    }
-
-    const filename = req.file ? req.file.filename : product?.productImageUrl;
-
     try {
-      await product.update({
+      const product = await Product.findOne({ where: { id } });
+
+      if (!product) {
+        res.status(404).json({
+          message: "No product with that id",
+        });
+        return;
+      }
+
+      const filename = req.file ? req.file.filename : product.productImageUrl;
+
+      const updatedProduct = await product.update({
         productName: productName || product.productName,
         productDescription: productDescription || product.productDescription,
-        productPrice: productPrice || product.productPrice,
-        productTotalStock: productTotalStock || product.productTotalStock,
-        productDiscount:
-          productDiscount !== undefined
-            ? productDiscount
-            : product.productDiscount,
+        productPrice: productPrice ?? product.productPrice,
+        productTotalStock: productTotalStock ?? product.productTotalStock,
+        productDiscount: productDiscount ?? product.productDiscount,
         categoryId,
         productImageUrl: filename,
       });
-      res.status(400).json({
+
+      res.status(200).json({
         message: "Product updated successfully",
-        data: product,
+        data: updatedProduct,
       });
     } catch (error: any) {
+      console.error("Update product error:", error);
       res.status(500).json({
         error: error.message,
       });
