@@ -15,6 +15,13 @@ router
     errorHandler(orderController.fetchMyOrder)
   );
 router
+  .route("/all")
+  .get(
+    userMiddleware.isUserLoggedIn,
+    userMiddleware.accessTo(Role.Admin),
+    errorHandler(orderController.fetchAllOrder)
+  );
+router
   .route("/verify-transaction")
   .post(
     userMiddleware.isUserLoggedIn,
