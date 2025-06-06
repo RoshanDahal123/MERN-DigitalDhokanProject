@@ -48,11 +48,10 @@ router
     userMiddleware.accessTo(Role.Customer),
     errorHandler(orderController.CancelMyOrder)
   );
-router
-  .route("/:id")
-  .get(
-    userMiddleware.isUserLoggedIn,
-    errorHandler(orderController.fetchMyOrderDetail)
-  );
+router.route("/:id").get(
+  userMiddleware.isUserLoggedIn,
+  // userMiddleware.accessTo(Role.Admin),
+  errorHandler(orderController.fetchMyOrderDetail)
+);
 
 export default router;
