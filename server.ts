@@ -25,7 +25,7 @@ function startServer() {
     onlineUsers.push({ socketId, userId, role });
   };
   io.on("connection", (socket) => {
-    const { token } = socket.handshake.headers; //jwt token
+    const { token } = socket.handshake.auth; //jwt token
     if (token) {
       jwt.verify(
         token as string,
@@ -49,6 +49,7 @@ function startServer() {
       socket.emit("error", "please provide token");
     }
     socket.on("updateOrderStatus", async (data) => {
+      console.log("updateOrderStatus data", data);
       const { status, orderId, userId } = data;
 
       const findUser = onlineUsers.find((user) => user.userId == userId); // {socketId,userId, role}
@@ -64,11 +65,9 @@ function startServer() {
             },
           }
         );
-
-        io.to(findUser.socketId).emit(
-          "success",
-          "Order Status updated successfully!!"
-        );
+        if (userId) {
+          io.to(findUser.socketId).emit("statusUpdated", data);
+        }
       } else {
         socket.emit("error", "User is not online!!");
       }

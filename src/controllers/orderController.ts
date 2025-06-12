@@ -214,7 +214,7 @@ class OrderController {
   async fetchMyOrderDetail(req: OrderRequest, res: Response) {
     // const userId = req.user?.id;
     const orderId = req.params.id;
-    console.log("this is the order idof the product", orderId);
+
     const orders = await OrderDetails.findAll({
       where: {
         orderId,
@@ -239,6 +239,7 @@ class OrderController {
             "firstName",
             "lastName",
             "email",
+            "userId",
           ],
         },
         {
