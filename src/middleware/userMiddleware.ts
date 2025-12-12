@@ -17,6 +17,17 @@ interface IExtendedRequest extends Request {
   };
 }
 
+export interface AuthRequest extends Request {
+  userId?: string;
+  user?: {
+    username: string;
+    email: string;
+    role: string;
+    password: string;
+    id: string;
+  };
+}
+
 class UserMiddleware {
   async isUserLoggedIn(
     req: IExtendedRequest,
@@ -72,4 +83,44 @@ class UserMiddleware {
   }
 }
 
-export default new UserMiddleware();
+const userMiddleware = new UserMiddleware();
+
+// Export a standalone isAuthenticated function for new routes
+export const isAuthenticated = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const token = req.headers.authorization;
+  if (!token) {
+    res.status(403).json({
+      message: "Token must be provided",
+    });
+    return;
+  }
+
+  jwt.verify(
+    token,
+    envConfig.jwtSecretKey as string,
+    async (err, result: any) => {
+      if (err) {
+        res.status(403).json({
+          message: "Invalid token!!!",
+        });
+        return;
+      }
+      const userData = await User.findByPk(result.userId);
+      if (!userData) {
+        res.status(404).json({
+          message: "No user with that userId",
+        });
+        return;
+      }
+      req.userId = userData.id;
+      req.user = userData;
+      next();
+    }
+  );
+};
+
+export default userMiddleware;

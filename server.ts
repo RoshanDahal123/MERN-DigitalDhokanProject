@@ -1,4 +1,4 @@
-import adminSeeder from "./adminSeeder";
+import adminSeeder from "./adminSeeder.ts";
 import app from "./src/app";
 import { envConfig } from "./src/config/config";
 import categoryController from "./src/controllers/categoryController";
@@ -6,10 +6,13 @@ import { Server } from "socket.io";
 import jwt from "jsonwebtoken";
 import User from "./src/database/models/userModel";
 import Order from "./src/database/models/orderModel";
+import { databaseSync } from "./src/database/connection";
 function startServer() {
   const port = envConfig.port || 4000;
-  const server = app.listen(port, () => {
+  const server = app.listen(port, async () => {
     console.log(`server started successfully at port [${port}]`);
+    // Wait for database to sync before running seeders
+    await databaseSync;
     adminSeeder();
     categoryController.seedCategory();
   });

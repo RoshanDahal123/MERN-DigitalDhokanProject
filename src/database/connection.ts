@@ -7,6 +7,8 @@ import User from "./models/userModel";
 import Payment from "./models/paymentDetails";
 import OrderDetails from "./models/orderDetails";
 import Cart from "./models/cartModel";
+import Wishlist from "./models/wishlistModel";
+import Review from "./models/reviewModel";
 const sequelize = new Sequelize(envConfig.connectionString as string, {
   models: [__dirname + "/models"],
 });
@@ -23,8 +25,8 @@ try {
   console.log(error);
 }
 
-sequelize.sync({ force: false, alter: false }).then(() => {
-  console.log("local changes injected to database successfully synced");
+export const databaseSync = sequelize.sync({ alter: true }).then(() => {
+  console.log("database successfully synced");
 });
 
 //ralationships
@@ -48,5 +50,19 @@ User.hasOne(Cart, { foreignKey: "userId" });
 
 Cart.belongsTo(Product, { foreignKey: "productId" });
 Product.hasMany(Cart, { foreignKey: "productId" });
+
+// Wishlist relationships
+Wishlist.belongsTo(User, { foreignKey: "userId" });
+User.hasMany(Wishlist, { foreignKey: "userId" });
+
+Wishlist.belongsTo(Product, { foreignKey: "productId" });
+Product.hasMany(Wishlist, { foreignKey: "productId" });
+
+// Review relationships
+Review.belongsTo(User, { foreignKey: "userId" });
+User.hasMany(Review, { foreignKey: "userId" });
+
+Review.belongsTo(Product, { foreignKey: "productId" });
+Product.hasMany(Review, { foreignKey: "productId" });
 
 export default sequelize;

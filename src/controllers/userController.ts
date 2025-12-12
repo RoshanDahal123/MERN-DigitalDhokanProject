@@ -154,22 +154,46 @@ class UserController {
       sendResponse(
         res,
         400,
-        "Please provide newPassword,confirmPassword,email,otp"
+        "Please provide newPassword, confirmPassword, and email"
       );
       return;
     }
-    if (newPassword !== confirmPassword) {
-      sendResponse(res, 400, "newpassword and confirm password must be same");
+
+    // Password validation
+    if (newPassword.length < 8) {
+      sendResponse(res, 400, "Password must be at least 8 characters long");
       return;
     }
+
+    // Check for at least one uppercase, one lowercase, one number, and one special character
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(newPassword)) {
+      sendResponse(
+        res,
+        400,
+        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+      );
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      sendResponse(res, 400, "New password and confirm password must be same");
+      return;
+    }
+
     const user = await findData(User, email);
     if (!user) {
-      sendResponse(res, 404, "No email with that user");
-    } else {
-      user.password = bcrypt.hashSync(newPassword, 12);
-      await user.save();
-      sendResponse(res, 200, "Password reset successfully");
+      sendResponse(res, 404, "No user found with that email");
+      return;
     }
+
+    // Clear OTP after successful password reset
+    user.password = bcrypt.hashSync(newPassword, 12);
+    user.otp = "";
+    user.otpGeneratedTime = "";
+    await user.save();
+
+    sendResponse(res, 200, "Password reset successfully");
   }
   static async fetchUsers(req: Request, res: Response) {
     const users = await User.findAll({

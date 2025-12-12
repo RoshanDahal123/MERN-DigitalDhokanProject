@@ -6,6 +6,8 @@ import categoryRoute from "./routes/categoryRoute";
 import productRoute from "./routes/productRoute";
 import orderRoute from "./routes/orderRoute";
 import cartRoute from "./routes/cartRoute";
+import wishlistRoute from "./routes/wishlistRoute";
+import reviewRoute from "./routes/reviewRoute";
 import cors from "cors";
 import Product from "./database/models/productModel";
 app.use(
@@ -20,6 +22,8 @@ app.use("/api/category", categoryRoute);
 app.use("/api/product", productRoute);
 app.use("/api/order", orderRoute);
 app.use("/api/cart", cartRoute);
+app.use("/api/wishlist", wishlistRoute);
+app.use("/api/review", reviewRoute);
 
 app.use(express.static("./src/uploads"));
 export default app;
