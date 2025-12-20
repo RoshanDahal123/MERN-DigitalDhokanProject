@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch server.ts"
+    "dev": "tsx watch server.ts",
+    "sync-db": "tsx syncDatabase.ts",
+    "test-otp": "tsx testOtp.ts"
   },
   "keywords": [],
   "author": "",

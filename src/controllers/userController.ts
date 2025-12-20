@@ -108,14 +108,25 @@ class UserController {
       res.status(400).json({ message: "Email not registered" });
     } else {
       const otp = generateOtp();
+      const currentTime = Date.now();
+      
+      console.log('Generated OTP:', otp); // Debug log
+      console.log('OTP Length:', otp.toString().length); // Debug log
+      console.log('Timestamp:', currentTime); // Debug log
+      
       await sendMail({
         to: email,
-        subject: "Digital Dookan Password change Request",
-        text: `you just request reset Password,here is your otp,${otp}`,
+        subject: "Digital Dookan - Password Reset OTP",
+        text: `You have requested to reset your password.\n\nYour 6-digit OTP is: ${otp}\n\nThis OTP is valid for 2 minutes.\n\nIf you did not request this, please ignore this email.\n\nRegards,\nDigital Dookan Team`,
       });
+      
       user.otp = otp.toString();
-      user.otpGeneratedTime = Date.now().toString();
+      user.otpGeneratedTime = currentTime.toString();
       await user.save();
+      
+      console.log('Saved OTP:', user.otp); // Debug log
+      console.log('Saved Timestamp:', user.otpGeneratedTime); // Debug log
+      
       res.status(200).json({ message: "Password Reset Otp sent" });
     }
   }

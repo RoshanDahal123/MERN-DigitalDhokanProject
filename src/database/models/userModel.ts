@@ -35,12 +35,14 @@ class User extends Model {
   declare role: string;
 
   @Column({
-    type: DataType.STRING,
+    type: DataType.STRING(10),
+    allowNull: true,
   })
   declare otp: string;
 
   @Column({
     type: DataType.STRING,
+    allowNull: true,
   })
   declare otpGeneratedTime: string;
 }
