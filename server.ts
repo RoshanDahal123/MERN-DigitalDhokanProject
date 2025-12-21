@@ -10,7 +10,6 @@ import { databaseSync } from "./src/database/connection";
 function startServer() {
   const port = envConfig.port || 4000;
   const server = app.listen(port, async () => {
-    console.log(`server started successfully at port [${port}]`);
     // Wait for database to sync before running seeders
     await databaseSync;
     adminSeeder();
@@ -44,7 +43,6 @@ function startServer() {
             }
             //userId grab garne
             addToOnlineUsers(socket.id, result.userId, userData.role);
-            console.log(onlineUsers);
           }
         }
       );
@@ -52,7 +50,6 @@ function startServer() {
       socket.emit("error", "please provide token");
     }
     socket.on("updateOrderStatus", async (data) => {
-      console.log("updateOrderStatus data", data);
       const { status, orderId, userId } = data;
 
       const findUser = onlineUsers.find((user) => user.userId == userId); // {socketId,userId, role}

@@ -79,9 +79,6 @@ class ProductController {
 
   async updateProduct(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
-    console.log("req.params", req.params.id);
-
-    console.log("req.body", req);
 
     const {
       productName,

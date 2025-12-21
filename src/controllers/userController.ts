@@ -110,10 +110,6 @@ class UserController {
       const otp = generateOtp();
       const currentTime = Date.now();
       
-      console.log('Generated OTP:', otp); // Debug log
-      console.log('OTP Length:', otp.toString().length); // Debug log
-      console.log('Timestamp:', currentTime); // Debug log
-      
       await sendMail({
         to: email,
         subject: "Digital Dookan - Password Reset OTP",
@@ -123,9 +119,6 @@ class UserController {
       user.otp = otp.toString();
       user.otpGeneratedTime = currentTime.toString();
       await user.save();
-      
-      console.log('Saved OTP:', user.otp); // Debug log
-      console.log('Saved Timestamp:', user.otpGeneratedTime); // Debug log
       
       res.status(200).json({ message: "Password Reset Otp sent" });
     }

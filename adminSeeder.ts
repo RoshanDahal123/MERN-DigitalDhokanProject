@@ -14,9 +14,6 @@ const adminSeeder = async () => {
       email: envConfig.adminEmail,
       role: "admin",
     });
-    console.log("Admin Seeded");
-  } else {
-    console.log("admin already seeded");
   }
 };
 

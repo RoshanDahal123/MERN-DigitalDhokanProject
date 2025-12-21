@@ -16,17 +16,17 @@ try {
   sequelize
     .authenticate()
     .then(() => {
-      console.log("authentication is correct");
+      // Database authenticated successfully
     })
     .catch((err) => {
-      console.log("error occured", err);
+      // Authentication error
     });
 } catch (error) {
-  console.log(error);
+  // Connection error
 }
 
 export const databaseSync = sequelize.sync({ alter: true }).then(() => {
-  console.log("database successfully synced");
+  // Database successfully synced
 });
 
 //ralationships

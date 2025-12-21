@@ -21,15 +21,10 @@ class CategoryController {
     const datas = await Category.findAll();
     if (datas.length === 0) {
       await Category.bulkCreate(this.categoryData);
-      console.log("Categories seeded successfully");
-    } else {
-      console.log("Categories already saved");
     }
   }
 
   async addCategory(req: Request, res: Response): Promise<void> {
-    //@ts-ignore
-    console.log(req.user);
     const { categoryName } = req.body;
 
     if (!categoryName) {

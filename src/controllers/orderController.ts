@@ -274,7 +274,6 @@ class OrderController {
         id: orderId,
       },
     });
-    // console.log(order);
     if (!order) {
       res.status(400).json({
         message: "No order with that Id",
