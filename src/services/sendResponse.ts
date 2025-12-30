@@ -7,7 +7,7 @@ const sendResponse = (
 ) => {
   res.status(statusNumber).json({
     message,
-    data: data.length > 0 ? data : null,
+    data: data?.length > 0 ? data : null,
   });
 };
 export default sendResponse;
