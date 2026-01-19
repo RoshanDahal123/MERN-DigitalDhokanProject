@@ -40,7 +40,7 @@ class ReviewController {
     if (existingReview) {
       // Update existing review
       existingReview.rating = rating;
-      existingReview.comment = comment || "";
+      existingReview.comment = comment?.trim() || "";
       await existingReview.save();
       sendResponse(res, 200, "Review updated successfully", existingReview);
       return;
@@ -51,7 +51,7 @@ class ReviewController {
       userId: userId,
       productId: productId,
       rating: rating,
-      comment: comment || "",
+      comment: comment?.trim() || "",
     });
 
     sendResponse(res, 201, "Review added successfully", review);
@@ -61,7 +61,7 @@ class ReviewController {
   async getProductReviews(req: Request, res: Response) {
     const { productId } = req.params;
 
-    const reviews = await Review.findAll({
+    const allReviews = await Review.findAll({
       where: {
         productId: productId,
       },
@@ -74,18 +74,23 @@ class ReviewController {
       order: [["createdAt", "DESC"]],
     });
 
-    // Calculate average rating
-    const totalRating = reviews.reduce(
+    // Filter out invalid reviews (only include reviews with valid ratings)
+    const validReviews = allReviews.filter(
+      (review) => review.rating && review.rating >= 1 && review.rating <= 5
+    );
+
+    // Calculate average rating from valid reviews only
+    const totalRating = validReviews.reduce(
       (sum, review) => sum + review.rating,
       0
     );
     const averageRating =
-      reviews.length > 0 ? (totalRating / reviews.length).toFixed(1) : 0;
+      validReviews.length > 0 ? (totalRating / validReviews.length).toFixed(1) : "0";
 
     sendResponse(res, 200, "Reviews fetched successfully", {
-      reviews: reviews,
+      reviews: validReviews,
       averageRating: averageRating,
-      totalReviews: reviews.length,
+      totalReviews: validReviews.length,
     });
   }
 

@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import Product from "../database/models/productModel";
 import Category from "../database/models/categoryModel";
+import Review from "../database/models/reviewModel";
+import { Op } from "sequelize";
 
 // import { File } from "multer";
 // interface IProductRequest extends Request {
@@ -48,21 +50,55 @@ class ProductController {
     });
   }
   async getAllProducts(req: Request, res: Response): Promise<void> {
-    const datas = await Product.findAll({
+    const products = await Product.findAll({
       include: {
         model: Category,
         attributes: ["id", "categoryName"],
       },
     });
+
+    // Calculate review statistics for each product
+    const productsWithReviews = await Promise.all(
+      products.map(async (product) => {
+        const reviews = await Review.findAll({
+          where: {
+            productId: product.id,
+            rating: {
+              [Op.between]: [1, 5],
+            },
+          },
+        });
+
+        const validReviews = reviews.filter(
+          (review) => review.rating && review.rating >= 1 && review.rating <= 5
+        );
+
+        const totalRating = validReviews.reduce(
+          (sum, review) => sum + review.rating,
+          0
+        );
+        const averageRating =
+          validReviews.length > 0
+            ? parseFloat((totalRating / validReviews.length).toFixed(1))
+            : 0;
+
+        return {
+          ...product.toJSON(),
+          averageRating,
+          totalReviews: validReviews.length,
+        };
+      })
+    );
+
     res.status(200).json({
-      message: "Products fethced successfully",
-      data: datas,
+      message: "Products fetched successfully",
+      data: productsWithReviews,
     });
   }
 
   async getSingleProduct(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
-    const datas = await Product.findAll({
+    const products = await Product.findAll({
       where: {
         id: id,
       },
@@ -71,9 +107,46 @@ class ProductController {
         attributes: ["id", "categoryName"],
       },
     });
+
+    if (products.length === 0) {
+      res.status(404).json({
+        message: "Product not found",
+      });
+      return;
+    }
+
+    // Calculate review statistics
+    const reviews = await Review.findAll({
+      where: {
+        productId: id,
+        rating: {
+          [Op.between]: [1, 5],
+        },
+      },
+    });
+
+    const validReviews = reviews.filter(
+      (review) => review.rating && review.rating >= 1 && review.rating <= 5
+    );
+
+    const totalRating = validReviews.reduce(
+      (sum, review) => sum + review.rating,
+      0
+    );
+    const averageRating =
+      validReviews.length > 0
+        ? parseFloat((totalRating / validReviews.length).toFixed(1))
+        : 0;
+
+    const productWithReviews = {
+      ...products[0].toJSON(),
+      averageRating,
+      totalReviews: validReviews.length,
+    };
+
     res.status(200).json({
-      message: "Products fethced successfully",
-      data: datas,
+      message: "Product fetched successfully",
+      data: [productWithReviews],
     });
   }
 
