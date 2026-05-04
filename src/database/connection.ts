@@ -25,44 +25,44 @@ try {
   // Connection error
 }
 
-export const databaseSync = sequelize.sync({ alter: false}).then(() => {
+export const databaseSync = sequelize.sync({ alter: true }).then(() => {
   // Database successfully synced
 });
 
-//ralationships
+// relationships
 
 Product.belongsTo(Category, { foreignKey: "categoryId" });
 Category.hasOne(Product, { foreignKey: "categoryId" });
 //User x Order
 Order.belongsTo(User, { foreignKey: "userId" });
-User.hasMany(Order, { foreignKey: "userId" });
+User.hasMany(Order, { foreignKey: "userId", onDelete: "CASCADE" });
 //Payment* Order
 Payment.hasOne(Order, { foreignKey: "paymentId" });
 Order.belongsTo(Payment, { foreignKey: "paymentId" });
 //Order x OrderDetails
-OrderDetails.belongsTo(Order, { foreignKey: "orderId" });
-Order.hasOne(OrderDetails, { foreignKey: "orderId" });
-OrderDetails.belongsTo(Product, { foreignKey: "productId" });
-Product.hasMany(OrderDetails, { foreignKey: "productId" });
+OrderDetails.belongsTo(Order, { foreignKey: "orderId", onDelete: "CASCADE" });
+Order.hasOne(OrderDetails, { foreignKey: "orderId", onDelete: "CASCADE" });
+OrderDetails.belongsTo(Product, { foreignKey: "productId", onDelete: "CASCADE" });
+Product.hasMany(OrderDetails, { foreignKey: "productId", onDelete: "CASCADE" });
 
-Cart.belongsTo(User, { foreignKey: "userId" });
-User.hasOne(Cart, { foreignKey: "userId" });
+Cart.belongsTo(User, { foreignKey: "userId", onDelete: "CASCADE" });
+User.hasOne(Cart, { foreignKey: "userId", onDelete: "CASCADE" });
 
-Cart.belongsTo(Product, { foreignKey: "productId" });
-Product.hasMany(Cart, { foreignKey: "productId" });
+Cart.belongsTo(Product, { foreignKey: "productId", onDelete: "CASCADE" });
+Product.hasMany(Cart, { foreignKey: "productId", onDelete: "CASCADE" });
 
 // Wishlist relationships
-Wishlist.belongsTo(User, { foreignKey: "userId" });
-User.hasMany(Wishlist, { foreignKey: "userId" });
+Wishlist.belongsTo(User, { foreignKey: "userId", onDelete: "CASCADE" });
+User.hasMany(Wishlist, { foreignKey: "userId", onDelete: "CASCADE" });
 
-Wishlist.belongsTo(Product, { foreignKey: "productId" });
-Product.hasMany(Wishlist, { foreignKey: "productId" });
+Wishlist.belongsTo(Product, { foreignKey: "productId", onDelete: "CASCADE" });
+Product.hasMany(Wishlist, { foreignKey: "productId", onDelete: "CASCADE" });
 
 // Review relationships
-Review.belongsTo(User, { foreignKey: "userId" });
-User.hasMany(Review, { foreignKey: "userId" });
+Review.belongsTo(User, { foreignKey: "userId", onDelete: "CASCADE" });
+User.hasMany(Review, { foreignKey: "userId", onDelete: "CASCADE" });
 
-Review.belongsTo(Product, { foreignKey: "productId" });
-Product.hasMany(Review, { foreignKey: "productId" });
+Review.belongsTo(Product, { foreignKey: "productId", onDelete: "CASCADE" });
+Product.hasMany(Review, { foreignKey: "productId", onDelete: "CASCADE" });
 
 export default sequelize;

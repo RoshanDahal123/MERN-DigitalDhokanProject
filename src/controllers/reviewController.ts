@@ -95,29 +95,29 @@ class ReviewController {
   }
 
   // Get user's reviews
-  async getUserReviews(req: AuthRequest, res: Response) {
-    const userId = req.userId;
+  // async getUserReviews(req: AuthRequest, res: Response) {
+  //   const userId = req.userId;
 
-    const reviews = await Review.findAll({
-      where: {
-        userId: userId,
-      },
-      include: [
-        {
-          model: Product,
-          attributes: [
-            "id",
-            "productName",
-            "productImageUrl",
-            "productPrice",
-          ],
-        },
-      ],
-      order: [["createdAt", "DESC"]],
-    });
+  //   const reviews = await Review.findAll({
+  //     where: {
+  //       userId: userId,
+  //     },
+  //     include: [
+  //       {
+  //         model: Product,
+  //         attributes: [
+  //           "id",
+  //           "productName",
+  //           "productImageUrl",
+  //           "productPrice",
+  //         ],
+  //       },
+  //     ],
+  //     order: [["createdAt", "DESC"]],
+  //   });
 
-    sendResponse(res, 200, "User reviews fetched successfully", reviews);
-  }
+  //   sendResponse(res, 200, "User reviews fetched successfully", reviews);
+  // }
 
   // Delete a review
   async deleteReview(req: AuthRequest, res: Response) {
