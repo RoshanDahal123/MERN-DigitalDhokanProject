@@ -10,8 +10,8 @@ router.route("/product/:productId").get(ReviewController.getProductReviews);
 // Protected routes
 router
   .route("/")
-  .post(isAuthenticated, ReviewController.addReview)
-  .get(isAuthenticated, ReviewController.getUserReviews);
+  .post(isAuthenticated, ReviewController.addReview);
+  // .get(isAuthenticated, ReviewController.getUserReviews);
 
 router
   .route("/user-product/:productId")

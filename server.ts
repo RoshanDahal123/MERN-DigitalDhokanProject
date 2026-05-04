@@ -52,9 +52,8 @@ function startServer() {
     socket.on("updateOrderStatus", async (data) => {
       const { status, orderId, userId } = data;
 
-      const findUser = onlineUsers.find((user) => user.userId == userId); // {socketId,userId, role}
-
-      if (findUser) {
+      try {
+        // ALWAYS update the order status in the database first
         await Order.update(
           {
             orderStatus: status,
@@ -65,11 +64,15 @@ function startServer() {
             },
           }
         );
-        if (userId) {
+
+        // Then, emit a notification IF the user is online
+        const findUser = onlineUsers.find((user) => user.userId == userId);
+        if (findUser && userId) {
           io.to(findUser.socketId).emit("statusUpdated", data);
         }
-      } else {
-        socket.emit("error", "User is not online!!");
+      } catch (error) {
+        console.error("Error updating order status:", error);
+        socket.emit("error", "Failed to update order status in database");
       }
     });
   });
