@@ -34,6 +34,14 @@ router
     userMiddleware.accessTo(Role.Admin),
     errorHandler(orderController.changeOrderStatus)
   );
+
+router
+  .route("/admin/change-payment-status/:id")
+  .patch(
+    userMiddleware.isUserLoggedIn,
+    userMiddleware.accessTo(Role.Admin),
+    errorHandler(orderController.changePaymentStatus)
+  );
 router
   .route("/admin/delete-order/:id")
   .post(

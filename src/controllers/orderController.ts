@@ -327,6 +327,36 @@ class OrderController {
       message: "OrderStatus updated successfully",
     });
   }
+
+  async changePaymentStatus(req: OrderRequest, res: Response): Promise<void> {
+    const orderId = req.params.id;
+    const { paymentStatus } = req.body;
+    if (!orderId || !paymentStatus) {
+      res.status(400).json({
+        message: "Please Provide OrderId and PaymentStatus",
+      });
+      return;
+    }
+    
+    // Have to get the order to find the PaymentId
+    const order = await Order.findByPk(orderId) as any;
+    if (!order) {
+      res.status(404).json({ message: "Order not found" });
+      return;
+    }
+    
+    await Payment.update(
+      { paymentStatus: paymentStatus },
+      {
+        where: {
+          id: order.paymentId,
+        },
+      }
+    );
+    res.status(200).json({
+      message: "Payment Status updated successfully",
+    });
+  }
   async deleteOrder(req: OrderRequest, res: Response): Promise<void> {
     const orderId = req.params.id;
     const order: OrderWithPaymentId = (await Order.findByPk(
