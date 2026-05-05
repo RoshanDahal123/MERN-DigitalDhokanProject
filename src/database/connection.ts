@@ -25,7 +25,7 @@ try {
   // Connection error
 }
 
-export const databaseSync = sequelize.sync({ alter: true }).then(() => {
+export const databaseSync = sequelize.sync({ alter: false }).then(() => {
   // Database successfully synced
 });
 

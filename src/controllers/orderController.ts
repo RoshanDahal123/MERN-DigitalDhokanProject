@@ -192,11 +192,10 @@ class OrderController {
   }
   async fetchAllOrder(req: OrderRequest, res: Response): Promise<void> {
     const orders = await Order.findAll({
-      attributes: ["totalAmount", "id", "orderStatus"],
       include: {
         model: Payment,
-        attributes: ["paymentMethod", "paymentStatus"],
       },
+      order: [["createdAt", "DESC"]]
     });
     if (orders.length > 0) {
       res.status(200).json({
