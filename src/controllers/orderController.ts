@@ -7,6 +7,7 @@ import axios from "axios";
 import Cart from "../database/models/cartModel";
 import Product from "../database/models/productModel";
 import Category from "../database/models/categoryModel";
+import { envConfig } from "../config/config";
 interface IProduct {
   productId: string;
   quantity: string;
@@ -93,14 +94,14 @@ class OrderController {
     if (paymentMethod == PaymentMethod.Khalti) {
       //khalti integration
       const data = {
-        return_url: "http://localhost:5173/",
-        website_url: "http://localhost:5173/",
+        return_url: envConfig.returnUrl || "http://localhost:5173/",
+        website_url: envConfig.websiteUrl || "http://localhost:5173/",
         amount: totalAmount * 100,
         purchase_order_id: orderData.id,
         purchase_order_name: "order_" + orderData.id,
       };
       const response = await axios.post(
-        "https://dev.khalti.com/api/v2/epayment/initiate/",
+        "https://a.khalti.com/api/v2/epayment/initiate/",
         data,
         {
           headers: {
@@ -119,7 +120,9 @@ class OrderController {
         data,
       });
     } else if (paymentMethod == PaymentMethod.Esewa) {
+
       //esewa integration
+       
     } else {
       res.status(200).json({
         message: "Order Created Successfully",
@@ -192,11 +195,15 @@ class OrderController {
   }
   async fetchAllOrder(req: OrderRequest, res: Response): Promise<void> {
     const orders = await Order.findAll({
+      attributes: ["totalAmount", "id", "orderStatus"],
       include: {
         model: Payment,
+        attributes: ["paymentMethod", "paymentStatus"],
       },
       order: [["createdAt", "DESC"]]
     });
+     
+     
     if (orders.length > 0) {
       res.status(200).json({
         message: "Orders fetched successsfully",
