@@ -7,6 +7,8 @@ import jwt from "jsonwebtoken";
 import User from "./src/database/models/userModel";
 import Order from "./src/database/models/orderModel";
 import { databaseSync } from "./src/database/connection";
+import sequelize from "./src/database/connection";
+import cron from "node-cron";
 function startServer() {
   const port = envConfig.port || 4000;
   const server = app.listen(port, async () => {
@@ -14,6 +16,19 @@ function startServer() {
     await databaseSync;
     adminSeeder();
     categoryController.seedCategory();
+    // Schedule a daily keep-alive ping at 20:00 (8 PM) server local time
+    try {
+      cron.schedule("0 20 * * *", async () => {
+        try {
+          await sequelize.query("SELECT 1");
+          console.log("DB keep-alive ping successful (scheduled 20:00)");
+        } catch (err) {
+          console.error("DB keep-alive ping failed:", err);
+        }
+      });
+    } catch (err) {
+      console.error("Failed to schedule DB keep-alive job:", err);
+    }
   });
 
   const io = new Server(server, {
