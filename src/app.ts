@@ -9,10 +9,21 @@ import cartRoute from "./routes/cartRoute";
 import wishlistRoute from "./routes/wishlistRoute";
 import reviewRoute from "./routes/reviewRoute";
 import cors from "cors";
-import Product from "./database/models/productModel";
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://digital-dokan-front-end.vercel.app",
+];
+
 app.use(
   cors({
-    origin: "https://digital-dokan-front-end.vercel.app/",
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
   })
 );
 app.use(express.json());
