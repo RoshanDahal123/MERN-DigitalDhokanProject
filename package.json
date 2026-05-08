@@ -6,7 +6,8 @@
     "dev": "tsx watch server.ts",
     "sync-db": "tsx syncDatabase.ts",
     "test-otp": "tsx testOtp.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "start": "tsx server.ts"
   },
   "keywords": [],
   "author": "",
