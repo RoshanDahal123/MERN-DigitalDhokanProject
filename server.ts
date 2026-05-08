@@ -10,7 +10,7 @@ import { databaseSync } from "./src/database/connection";
 import sequelize from "./src/database/connection";
 import cron from "node-cron";
 function startServer() {
-  const port = envConfig.port || 4000;
+  const port = process.env.PORT || 4000;
   const server = app.listen(port, async () => {
     // Wait for database to sync before running seeders
     await databaseSync;
