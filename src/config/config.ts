@@ -10,4 +10,6 @@ export const envConfig = {
   adminEmail: process.env.ADMIN_EMAIL,
   adminPassword: process.env.ADMIN_PASSWORD,
   adminName: process.env.ADMIN_USERNAME,
+  returnUrl: process.env.RETURN_URL,
+  websiteUrl: process.env.WEBSITE_URL,
 };

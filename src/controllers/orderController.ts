@@ -101,7 +101,7 @@ class OrderController {
         purchase_order_name: "order_" + orderData.id,
       };
       const response = await axios.post(
-        "https://a.khalti.com/api/v2/epayment/initiate/",
+        "https://dev.khalti.com/api/v2/epayment/initiate/",
         data,
         {
           headers: {
