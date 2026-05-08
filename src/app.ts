@@ -12,7 +12,7 @@ import cors from "cors";
 import Product from "./database/models/productModel";
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://digital-dokan-front-end.vercel.app/",
   })
 );
 app.use(express.json());
