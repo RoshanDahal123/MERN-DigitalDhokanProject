@@ -27,6 +27,7 @@ try {
 
 export const databaseSync = sequelize.sync({ alter: false }).then(() => {
   // Database successfully synced
+  console.log("database synced successfully");
 });
 
 // relationships

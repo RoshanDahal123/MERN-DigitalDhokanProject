@@ -38,15 +38,16 @@ class UserController {
       email,
       password: bcrypt.hashSync(password, 10),
     });
-    await sendMail({
-      to: email,
-      subject: "Registration successful on Digital Dookan",
-      text: "Welcome to Digital Dokaan, Thank you for supporting",
-    });
 
     res.status(201).json({
       message: "User registered successfully",
     });
+
+    void sendMail({
+      to: email,
+      subject: "Registration successful on Digital Dookan",
+      text: "Welcome to Digital Dokaan, Thank you for supporting",
+    }).catch(() => {});
   }
   static async login(req: Request, res: Response) {
     //accept incoming data-->email,password
@@ -109,18 +110,18 @@ class UserController {
     } else {
       const otp = generateOtp();
       const currentTime = Date.now();
-      
-      await sendMail({
-        to: email,
-        subject: "Digital Dookan - Password Reset OTP",
-        text: `You have requested to reset your password.\n\nYour 6-digit OTP is: ${otp}\n\nThis OTP is valid for 2 minutes.\n\nIf you did not request this, please ignore this email.\n\nRegards,\nDigital Dookan Team`,
-      });
-      
+
       user.otp = otp.toString();
       user.otpGeneratedTime = currentTime.toString();
       await user.save();
-      
+
       res.status(200).json({ message: "Password Reset Otp sent" });
+
+      void sendMail({
+        to: email,
+        subject: "Digital Dookan - Password Reset OTP",
+        text: `You have requested to reset your password.\n\nYour 6-digit OTP is: ${otp}\n\nThis OTP is valid for 2 minutes.\n\nIf you did not request this, please ignore this email.\n\nRegards,\nDigital Dookan Team`,
+      }).catch(() => {});
     }
   }
 

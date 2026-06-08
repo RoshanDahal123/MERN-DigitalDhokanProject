@@ -25,7 +25,8 @@ const sendMail = async (data: IData) => {
   try {
     await transporter.sendMail(mailOptions);
   } catch (error) {
-    // Error handling
+    console.error("Error sending email:", error);
+    throw error;
   }
 };
 export default sendMail;
